@@ -35,6 +35,7 @@ $ npm install
 ## Running the app
 
 ```bash
+$ cd fundmentals 
 # development
 $ npm run start
 
