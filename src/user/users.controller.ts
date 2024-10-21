@@ -1,32 +1,51 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserEntity } from './user.entity';
+import {v4  as uuid} from 'uuid';
 
 @Controller('users')
 export class UserController {
+  private readonly users:UserEntity[] = [];
   @Get()
-  find(): string[] {
-    return ['ahmed', 'salah', 'abdo'];
+  find(): UserEntity[] {
+    return this.users// because i'm inside the class so i can use this.users and users is property
   }
-  @Get(':username')
-  findOne(@Param('username') username: string): string {
-    return `username is ${username}`;
+  @Get(':id')
+  findOne(@Param('id') id: string): UserEntity {
+    return this.users.find((user)=>user.id===id)
   }
 
   @Post()
   //DTO==>Data Transfer Object is used to transfer data from one place to another and validate it
   create(@Body() userData:CreateUserDto) {
     
-    return userData;
+    const newUser:UserEntity = {
+      id: uuid(),
+      ...userData
+    }
+    this.users.push(newUser)
+    return newUser;
   }
 
-  @Patch(':username')// path
-  patchHello(@Param('username') username: string, @Body() input:UpdateUserDto): string {
-    return `input is ${input}`;
+  @Patch(':id')// path
+  patchHello(@Param('id') id: string, @Body() updateUserDto:UpdateUserDto): UserEntity {
+    //1) find the element index in the array and update it
+    const userIndex = this.users.findIndex((user)=>user.id===id)
+    this.users[userIndex] = {
+      ...this.users[userIndex],
+      ...updateUserDto
+    }
+    return this.users[userIndex]
+
+    
   }
   @Delete(':username')
   @HttpCode(HttpStatus.NO_CONTENT)
   deleteHello(@Param('username') username: string): string {
-    return `username is ${username}`;
+    const userIndex = this.users.findIndex((user)=>user.username===username)
+    this.users.splice(userIndex,1)
+    return 'User deleted'
+    
   }
 }
