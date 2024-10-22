@@ -18,7 +18,7 @@ export class UserController {
 
   @Post()
   //DTO==>Data Transfer Object is used to transfer data from one place to another and validate it
-  @UsePipes(ValidationPipe)// validation pipe is used to validate the data
+  
   create(@Body() userData:CreateUserDto) {
     
     const newUser:UserEntity = {
@@ -30,7 +30,6 @@ export class UserController {
   }
 
   @Patch(':id')// path
-  @UsePipes( ValidationPipe)
   patchHello(@Param('id',ParseUUIDPipe) id: string, @Body() updateUserDto:UpdateUserDto): UserEntity {
     //1) find the element index in the array and update it
     const userIndex = this.users.findIndex((user)=>user.id===id)
