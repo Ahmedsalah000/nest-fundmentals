@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, ParseUUIDPipe, Patch, Post, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { UserEntity } from './user.entity';
@@ -18,7 +18,8 @@ export class UserController {
 
   @Post()
   //DTO==>Data Transfer Object is used to transfer data from one place to another and validate it
-  create(@Body( ValidationPipe) userData:CreateUserDto) {
+  @UsePipes(ValidationPipe)// validation pipe is used to validate the data
+  create(@Body() userData:CreateUserDto) {
     
     const newUser:UserEntity = {
       id: uuid(),
@@ -29,7 +30,8 @@ export class UserController {
   }
 
   @Patch(':id')// path
-  patchHello(@Param('id',ParseUUIDPipe) id: string, @Body( ValidationPipe) updateUserDto:UpdateUserDto): UserEntity {
+  @UsePipes( ValidationPipe)
+  patchHello(@Param('id',ParseUUIDPipe) id: string, @Body() updateUserDto:UpdateUserDto): UserEntity {
     //1) find the element index in the array and update it
     const userIndex = this.users.findIndex((user)=>user.id===id)
     this.users[userIndex] = {
