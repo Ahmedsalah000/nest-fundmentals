@@ -12,4 +12,6 @@ export class CreateUserDto {
     readonly email: string;
     @IsInt()
     readonly age: number;
+    @IsString()
+    readonly password: string
 }
